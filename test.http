@@ -1,0 +1,79 @@
+@baseUrl = http://localhost:8000
+@contentType = Content-Type: application/json
+@adminToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6InRlc3RhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3NjIxNjQ1NjUsImV4cCI6MTc2MjE3MTc2NX0.bZzr_yntlx9uqc7miod7a5AFawgkAY4ihprT75Ub0Kc
+@userToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI4LCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzYxNzI3MDk1LCJleHAiOjE3NjE3MzQyOTV9.EhHX_3DQ4_L9e-gCX3DzVrSK2ytmbc8bXEXPO2D5mAc
+
+### Create User 
+POST {{baseUrl}}/auth/signup
+{{contentType}}
+
+{
+  "name": "JJ Jakes",
+  "email": "test24@gmail.com",
+  "password": "password123",
+  "phone": "+1234567890",
+  "role": "user"
+}
+
+###
+POST {{baseUrl}}/auth/signin
+{{contentType}}
+
+{
+  "email": "tyla@gmail.com",
+  "password": "password123"
+}
+
+###
+GET {{baseUrl}}/users/get-all
+Authorization: Bearer {{userToken}}
+
+###
+POST {{baseUrl}}/auth/signup
+{{contentType}}
+
+{
+  "name": "Admin test",
+  "email": "testadmin@gmail.com",
+  "password": "password123",
+  "phone": "+1234567890",
+  "role": "Admin"
+}
+
+###
+POST {{baseUrl}}/auth/signin
+{{contentType}}
+
+{
+  "email": "testadmin@gmail.com",
+  "password": "password123"
+}
+
+###
+GET {{baseUrl}}/users/get-all
+Authorization: Bearer {{adminToken}}
+
+###
+GET {{baseUrl}}/users/get-user/24
+Authorization: Bearer {{adminToken}}
+
+
+###
+GET {{baseUrl}}/seed/all
+
+###
+POST {{baseUrl}}/seed/clear
+
+
+### Create User 
+POST {{baseUrl}}/users/create-user
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "name": "JJ Jakes",
+  "email": "test24@gmail.com",
+  "password": "password123",
+  "phone": "+1234567890",
+  "role": "user"
+}
