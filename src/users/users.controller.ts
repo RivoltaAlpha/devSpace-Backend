@@ -19,25 +19,25 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @Roles(UserRole.Admin, UserRole.Organizer, UserRole.User)
+  @Roles(UserRole.Admin)
   @Get('get-all')
   findAll() {
     return this.usersService.findAll();
   }
 
-  @Roles(UserRole.Admin, UserRole.Organizer, UserRole.Guest, UserRole.User)
+  @Roles(UserRole.Admin)
   @Get('get-user/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
 
-  @Roles(UserRole.Admin, UserRole.Organizer, UserRole.Guest, UserRole.User)
+  @Roles(UserRole.Admin)
   @Patch('update-user/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
-  @Roles(UserRole.Admin, UserRole.Organizer, UserRole.Guest, UserRole.User)
+  @Roles(UserRole.Admin)
   @Delete('delete-user/:id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);

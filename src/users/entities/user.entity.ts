@@ -1,13 +1,12 @@
-import { Event } from "../../events/entities/event.entity";
-import { Feedback } from "../../feedback/entities/feedback.entity";
-import { Registration } from "../../registrations/entities/registration.entity";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn } from "typeorm";
+
+import { DeveloperProfile } from "src/developer-profile/entities/developer-profile.entity";
+import { TherapistProfile } from "src/therapist-profile/entities/therapist-profile.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, OneToOne } from "typeorm";
 
 export enum UserRole{
     Admin = 'Admin',
-    User = 'user',
-    Organizer = 'Organizer',
-    Guest = 'Guest'
+    Dev = 'Dev',
+    Therapist = 'Therapist',
 }
 
 @Entity('users')
@@ -43,12 +42,18 @@ export class User {
     @UpdateDateColumn({type: 'datetime2'})
     updated_at: Date;
 
-    @OneToMany(() => Feedback, (feedback) => feedback.user)
-    feedback: Feedback;
+    @Column({ name: 'is_active', default: true })
+  isActive: boolean;
 
-    @OneToMany(() => Registration, (registration) => registration.user)
-    registration: Registration;
+  @Column({ name: 'is_verified', default: false })
+  isVerified: boolean;
 
-    @OneToMany(() => Event, (event) => event.created_by)
-    event: Event;
+  @Column({ name: 'last_active_at', nullable: true })
+  lastActiveAt?: Date;
+
+   @OneToOne(() => DeveloperProfile, profile => profile.user)
+  developerProfile?: DeveloperProfile;
+
+  @OneToOne(() => TherapistProfile, profile => profile.user)
+  therapistProfile?: TherapistProfile;
 }
