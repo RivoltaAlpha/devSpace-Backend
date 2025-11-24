@@ -1,7 +1,7 @@
 import { User } from "src/users/entities/user.entity";
-import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Entity, CreateDateColumn, UpdateDateColumn } from "typeorm";
 
-
+@Entity('conversational_contexts')
 export class ConversationalContext {
     @PrimaryGeneratedColumn()
     context_id: number;
@@ -12,12 +12,14 @@ export class ConversationalContext {
     @Column({ type: 'nvarchar' })
     session_type: string;
 
-    @Column()
+    @CreateDateColumn({ type: 'datetime2' })
     created_at: Date;
+    
+    @UpdateDateColumn({ type: 'datetime2' })
     updated_at: Date;
 
     // relationships
-      @ManyToOne(() => User)
-      @JoinColumn({ name: 'dev_id' })
-      dev: User;
+    @ManyToOne(() => User)
+    @JoinColumn({ name: 'dev_id' })
+    dev: User;
 }

@@ -1,6 +1,5 @@
-import e from 'express';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export enum TypeofReminder {
   PERSONAL = 'personal',
@@ -26,6 +25,12 @@ export class Reminder {
 
   @Column({ type: 'datetime2' })
   remind_at: Date;
+
+  @CreateDateColumn({ type: 'datetime2' })
+  created_at: Date;
+
+  @UpdateDateColumn({ type: 'datetime2' })
+  updated_at: Date;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })

@@ -1,4 +1,5 @@
 import { User } from 'src/users/entities/user.entity';
+import { Message } from 'src/messages/entities/message.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +8,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 export enum ConversationStatus {
@@ -43,4 +45,7 @@ export class Conversation {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'therapist_id' })
   therapist: User;
+
+  @OneToMany(() => Message, message => message.conversation)
+  messages?: Message[];
 }
