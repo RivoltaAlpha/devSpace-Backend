@@ -30,21 +30,7 @@ export enum AppointmentType {
 @Entity('appointments')
 export class Appointment {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ name: 'dev_id' })
-  devId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'dev_id' })
-  dev: User;
-
-  @Column({ name: 'therapist_id' })
-  therapistId: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'therapist_id' })
-  therapist: User;
+  appointment_id: string;
 
   @Column({
     type: 'enum',
@@ -55,10 +41,10 @@ export class Appointment {
   appointmentType: AppointmentType;
 
   @Column({ name: 'scheduled_at' })
-  scheduledAt: Date;
+  scheduled_at: Date;
 
   @Column({ name: 'duration_minutes', default: 50 })
-  durationMinutes: number;
+  duration_minutes: number;
 
   @Column({
     type: 'enum',
@@ -67,51 +53,54 @@ export class Appointment {
   })
   status: AppointmentStatus;
 
-  @Column({ name: 'meeting_link', nullable: true })
-  meetingLink?: string;
+  @Column({ type: 'nvarchar', nullable: true })
+  meeting_link?: string;
 
-  @Column({ name: 'meeting_platform', nullable: true })
-  meetingPlatform?: string; // 'zoom', 'google-meet', 'teams'
+  @Column({ type: 'nvarchar', nullable: true })
+  meeting_platform?: string; // 'zoom', 'google-meet', 'teams'
 
-  @Column('text', { name: 'dev_notes', nullable: true })
-  devNotes?: string; // What the developer wants to discuss
+  @Column('text', { nullable: true })
+  dev_notes?: string; // What the developer wants to discuss
 
-  @Column('text', { name: 'therapist_notes', nullable: true })
-  therapistNotes?: string; // Private notes for therapist
+  @Column('text', { nullable: true })
+  therapist_notes?: string; // Private notes for therapist
 
-  @Column('text', { name: 'session_summary', nullable: true })
-  sessionSummary?: string; // Post-session summary
+  @Column('text', { nullable: true })
+  session_summary?: string; // Post-session summary
 
-  @Column({ name: 'dev_rating', nullable: true })
-  devRating?: number; // 1-5 rating from developer
+  @Column({ type: 'int', nullable: true })
+  dev_rating?: number; // 1-5 rating from developer
 
-  @Column('text', { name: 'dev_feedback', nullable: true })
-  devFeedback?: string;
+  @Column('text', { nullable: true })
+  dev_feedback?: string;
 
-  @Column({ name: 'reminder_sent', default: false })
-  reminderSent: boolean;
+  @Column({ type: 'bit', default: false })
+  reminder_sent: boolean;
 
-  @Column({ name: 'reminder_sent_at', nullable: true })
-  reminderSentAt?: Date;
+  @Column({ type: 'datetime2', nullable: true })
+  started_at?: Date;
 
-  @Column({ name: 'started_at', nullable: true })
-  startedAt?: Date;
+  @Column({ type: 'datetime2', nullable: true })
+  ended_at?: Date;
 
-  @Column({ name: 'ended_at', nullable: true })
-  endedAt?: Date;
+  @Column({ type: 'int', nullable: true })
+  cancelled_by?: number; // userId who cancelled
 
-  @Column({ name: 'cancelled_by', nullable: true })
-  cancelledBy?: string; // userId who cancelled
+  @Column({type: 'nvarchar', length: 255, nullable: true })
+  cancellation_reason?: string;
 
-  @Column('text', { name: 'cancellation_reason', nullable: true })
-  cancellationReason?: string;
+    @CreateDateColumn({type: 'datetime2'})
+    created_at: Date;
 
-  @Column({ name: 'cancelled_at', nullable: true })
-  cancelledAt?: Date;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+    @UpdateDateColumn({type: 'datetime2'})
+    updated_at: Date;
+  
+  // Relationships
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'dev_id' })
+  dev: User;
+  
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'therapist_id' })
+  therapist: User;
 }

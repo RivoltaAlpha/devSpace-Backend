@@ -5,8 +5,6 @@ import {
   Column, 
   CreateDateColumn, 
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
 
 export enum ResourceType {
@@ -21,59 +19,35 @@ export enum ResourceType {
   COURSE = 'course',
 }
 
-export enum DifficultyLevel {
-  BEGINNER = 'beginner',
-  INTERMEDIATE = 'intermediate',
-  ADVANCED = 'advanced',
-}
-
 @Entity('resources')
 export class Resource {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  resource_id: number;
 
-  @Column({ nullable: true, name: 'author_id' })
-  authorId?: string;
-
-  @ManyToOne(() => User, { nullable: true })
-  @JoinColumn({ name: 'author_id' })
-  author?: User;
-
-  @Column()
+  @Column({ type: 'nvarchar', length: 255 })
   title: string;
 
-  @Column({ unique: true })
-  slug: string;
-
-  @Column('text', { nullable: true })
+  @Column({ type: 'nvarchar', length: 255, unique: true })
   description?: string;
 
   @Column('text', { nullable: true })
-  content?: string; // Full content for articles/guides
+  content?: string; 
 
   @Column({
-    type: 'enum',
+    type: 'nvarchar',
     enum: ResourceType,
     name: 'resource_type',
   })
   resourceType: ResourceType;
 
-  @Column({ name: 'media_url', nullable: true })
-  mediaUrl?: string; // URL for videos, audios, PDFs
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  media_url?: string; // URL for videos, audios, PDFs
 
-  @Column({ name: 'thumbnail_url', nullable: true })
-  thumbnailUrl?: string;
+  @Column({ type: 'nvarchar', length: 255, nullable: true })
+  thumbnail_url?: string;
 
-  @Column({ name: 'duration_minutes', nullable: true })
-  durationMinutes?: number;
-
-  @Column({
-    type: 'enum',
-    enum: DifficultyLevel,
-    name: 'difficulty_level',
-    nullable: true,
-  })
-  difficultyLevel?: DifficultyLevel;
+  @Column({ type: 'int', nullable: true })
+  duration_minutes?: number;
 
   @Column('text', { array: true, nullable: true })
   tags?: string[]; // ['stress', 'burnout', 'imposter-syndrome']
@@ -81,36 +55,18 @@ export class Resource {
   @Column('text', { array: true, nullable: true })
   categories?: string[]; // ['mental-health', 'work-life-balance']
 
-  @Column({ name: 'target_audience', nullable: true })
-  targetAudience?: string; // 'junior-devs', 'senior-devs', 'all'
+  @Column({ type: 'nvarchar', length: 255, name: 'target_audience', nullable: true })
+  target_audience?: string; // 'junior-devs', 'senior-devs', 'all'
 
-  @Column({ name: 'is_premium', default: false })
-  isPremium: boolean;
+  @Column({ type: 'int', default: 50 })
+  view_count: number;
 
-  @Column({ name: 'is_featured', default: false })
-  isFeatured: boolean;
+  @Column({ type: 'int', default: 30 })
+  like_count: number;
 
-  @Column({ name: 'is_published', default: true })
-  isPublished: boolean;
+    @CreateDateColumn({type: 'datetime2'})
+    created_at: Date;
 
-  @Column({ name: 'view_count', default: 0 })
-  viewCount: number;
-
-  @Column({ name: 'like_count', default: 0 })
-  likeCount: number;
-
-  @Column({ name: 'completion_count', default: 0 })
-  completionCount: number;
-
-  @Column('jsonb', { name: 'metadata', nullable: true })
-  metadata?: Record<string, any>; // Flexible field for extra data
-
-  @Column({ name: 'published_at', nullable: true })
-  publishedAt?: Date;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+    @UpdateDateColumn({type: 'datetime2'})
+    updated_at: Date;
 }

@@ -32,7 +32,7 @@ export class User {
     @Column({
         type: 'varchar',
         length: 10,
-        default: UserRole.User
+        default: UserRole.Dev
     })
     role: UserRole;
     
@@ -43,13 +43,13 @@ export class User {
     updated_at: Date;
 
     @Column({ name: 'is_active', default: true })
-  isActive: boolean;
+  is_active: boolean;
 
   @Column({ name: 'is_verified', default: false })
-  isVerified: boolean;
+  is_verified: boolean;
 
   @Column({ name: 'last_active_at', nullable: true })
-  lastActiveAt?: Date;
+  last_active_at?: Date;
 
    @OneToOne(() => DeveloperProfile, profile => profile.user)
   developerProfile?: DeveloperProfile;

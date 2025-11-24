@@ -3,43 +3,40 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateCol
 
 @Entity('therapist_profiles')
 export class TherapistProfile {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ name: 'user_id' })
-  userId: string;
+  @PrimaryGeneratedColumn()
+  therapist_id: number;
 
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ name: 'license_number', nullable: true })
-  licenseNumber?: string;
+  @Column({ type: 'nvarchar', nullable: false })
+  license_number?: string;
 
   @Column('text', { array: true, nullable: true })
   specializations?: string[];
 
-  @Column({ name: 'years_experience', nullable: true })
-  yearsExperience?: number;
+  @Column({ type: 'int', nullable: true })
+  years_experience?: number;
 
   @Column('text', { nullable: true })
   bio?: string;
 
-  @Column('decimal', { name: 'session_rate', precision: 10, scale: 2, nullable: true })
-  sessionRate?: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  session_rate?: number;
 
-  @Column('jsonb', { name: 'availability_slots', nullable: true })
-  availabilitySlots?: Record<string, any>;
+  @Column({ type: 'jsonb', nullable: true })
+  availability_slots?: Record<string, any>;
 
-  @Column({ name: 'is_accepting_clients', default: true })
-  isAcceptingClients: boolean;
+  @Column({ type: 'bit', default: true })
+  is_accepting_clients: boolean;
 
-  @Column({ name: 'max_clients', default: 20 })
-  maxClients: number;
+  @Column({ type: 'int', default: 20 })
+  max_clients: number;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+    @CreateDateColumn({type: 'datetime2'})
+    created_at: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+    @UpdateDateColumn({type: 'datetime2'})
+    updated_at: Date;
 }

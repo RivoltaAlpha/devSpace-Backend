@@ -1,5 +1,13 @@
 import { User } from 'src/users/entities/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+  JoinColumn,
+} from 'typeorm';
 
 export enum ExperienceLevel {
   JUNIOR = 'junior',
@@ -17,50 +25,45 @@ export enum WorkMode {
 
 @Entity('developer_profiles')
 export class DeveloperProfile {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ name: 'user_id' })
-  userId: string;
+  @PrimaryGeneratedColumn()
+  dev_id: number;
 
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column('text', { array: true, name: 'tech_stack', nullable: true })
-  techStack?: string[];
+  @Column({ array: true, type: 'nvarchar', nullable: true })
+  tech_stack?: string[];
 
   @Column({
-    type: 'enum',
+    type: 'nvarchar',
     enum: ExperienceLevel,
     name: 'experience_level',
     nullable: true,
   })
-  experienceLevel?: ExperienceLevel;
-
-  @Column({ name: 'company_size', nullable: true })
-  companySize?: string;
+  experience_level?: ExperienceLevel;
 
   @Column({
-    type: 'enum',
+    type: 'nvarchar',
     enum: WorkMode,
     name: 'work_mode',
     nullable: true,
   })
-  workMode?: WorkMode;
+  work_mode?: WorkMode;
 
-  @Column({ nullable: true })
-  timezone?: string;
-
-  @Column('text', { nullable: true })
+  @Column({ type: 'nvarchar', length: 1000, nullable: true })
   bio?: string;
 
-  @Column('text', { array: true, name: 'primary_stressors', nullable: true })
-  primaryStressors?: string[];
+  @Column('nvarchar', {
+    array: true,
+    name: 'primary_stressors',
+    nullable: true,
+  })
+  primary_stressors?: string[];
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'datetime2' })
+  created_at: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  @UpdateDateColumn({ type: 'datetime2' })
+  updated_at: Date;
 }

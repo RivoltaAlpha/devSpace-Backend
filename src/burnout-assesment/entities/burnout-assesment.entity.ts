@@ -10,27 +10,20 @@ export enum RiskLevel {
 
 @Entity('burnout_assessments')
 export class BurnoutAssessment {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryGeneratedColumn()
+  assessment_id: number;
 
-  @Column({ name: 'user_id' })
-  userId: string;
+  @Column({ type: 'int', nullable: true })
+  emotionalExhaustion_score?: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
+  @Column({ type: 'int', nullable: true })
+  depersonalization_score?: number;
 
-  @Column({ name: 'emotional_exhaustion_score', nullable: true })
-  emotionalExhaustionScore?: number;
+  @Column({ type: 'int', nullable: true })
+  personal_accomplishment_score?: number;
 
-  @Column({ name: 'depersonalization_score', nullable: true })
-  depersonalizationScore?: number;
-
-  @Column({ name: 'personal_accomplishment_score', nullable: true })
-  personalAccomplishmentScore?: number;
-
-  @Column({ name: 'overall_burnout_score', nullable: true })
-  overallBurnoutScore?: number;
+  @Column({ type: 'int', nullable: true })
+  overall_burnout_score?: number;
 
   @Column({
     type: 'enum',
@@ -38,26 +31,15 @@ export class BurnoutAssessment {
     name: 'risk_level',
     nullable: true,
   })
-  riskLevel?: RiskLevel;
-
-  @Column({ name: 'work_hours_per_week', nullable: true })
-  workHoursPerWeek?: number;
-
-  @Column({ name: 'on_call_frequency', nullable: true })
-  onCallFrequency?: string;
-
-  @Column({ name: 'recent_incidents', default: false })
-  recentIncidents: boolean;
-
-  @Column({ name: 'team_support_score', nullable: true })
-  teamSupportScore?: number;
-
-  @Column('jsonb', { nullable: true })
-  responses?: Record<string, any>;
+  risk_level?: RiskLevel;
 
   @Column('text', { array: true, nullable: true })
   recommendations?: string[];
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+  @CreateDateColumn({ type: 'datetime2'})
+  created_at: Date;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

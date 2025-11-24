@@ -10,36 +10,29 @@ export enum CheckinType {
 @Entity('daily_checkins')
 export class DailyCheckin {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
-
-  @Column({ name: 'user_id' })
-  userId: string;
+  daily_checkin_id: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user: User;
 
   @Column({
-    type: 'enum',
+    type: 'nvarchar',
     enum: CheckinType,
-    name: 'checkin_type',
   })
-  checkinType: CheckinType;
+  checkin_type: CheckinType;
 
-  @Column({ name: 'mood_score', nullable: true })
-  moodScore?: number;
+  @Column({ type: 'int', nullable: true })
+  mood_score?: number;
 
-  @Column({ name: 'energy_level', nullable: true })
-  energyLevel?: number;
+  @Column({ type: 'int', nullable: true })
+  energy_level?: number;
 
-  @Column({ name: 'stress_level', nullable: true })
-  stressLevel?: number;
+  @Column({ type: 'int', nullable: true })
+  stress_level?: number;
 
-  @Column({ name: 'sleep_quality', nullable: true })
-  sleepQuality?: number;
-
-  @Column({ name: 'productivity_feeling', nullable: true })
-  productivityFeeling?: number;
+  @Column({ type: 'int', nullable: true })
+  productivity_feeling?: number;
 
   @Column('text', { nullable: true })
   note?: string;
@@ -47,6 +40,6 @@ export class DailyCheckin {
   @Column('text', { array: true, nullable: true })
   tags?: string[];
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
+    @CreateDateColumn({type: 'datetime2'})
+    created_at: Date;
 }
