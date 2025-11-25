@@ -2,11 +2,14 @@ import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 export enum TypeofReminder {
-  PERSONAL = 'personal',
-  WORK = 'work',
-  HEALTH = 'health',
-  FINANCE = 'finance',
-  OTHER = 'other',
+  DRINK_WATER = 'drink_water',
+  SCREEN_TIME_BREAK = 'screen_time_break',
+  CODE_BREAK = 'code_break',
+  CREATIVE_DIGEST = 'creative_digest',
+  POSTURE_CHECK = 'posture_check',
+  DEEP_BREATHING = 'deep_breathing',
+  STRETCH_BREAK = 'stretch_break',
+  MENTAL_HEALTH_CHECKIN = 'mental_health_checkin',
 }
 
 @Entity('reminders')

@@ -8,6 +8,7 @@ import { DailyCheckin } from "src/daily-checkins/entities/daily-checkin.entity";
 import { BurnoutAssessment } from "src/burnout-assesment/entities/burnout-assesment.entity";
 import { Reminder } from "src/reminders/entities/reminder.entity";
 import { ConversationalContext } from "src/conversational_contexts/entities/conversational_context.entity";
+import { ChatbotConversation } from "src/chatbot/entities/chatbot-conversation.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, OneToOne } from "typeorm";
 
 export enum UserRole{
@@ -95,4 +96,7 @@ export class User {
 
   @OneToMany(() => ConversationalContext, context => context.dev)
   conversationalContexts?: ConversationalContext[];
+
+  @OneToMany(() => ChatbotConversation, conversation => conversation.user)
+  chatbotConversations?: ChatbotConversation[];
 }

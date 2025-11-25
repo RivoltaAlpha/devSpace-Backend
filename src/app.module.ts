@@ -23,6 +23,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { ConversationalContextsModule } from './conversational_contexts/conversational_contexts.module';
+import { ChatbotModule } from './chatbot/enhanced-chatbot.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { ConversationalContextsModule } from './conversational_contexts/conversa
     RemindersModule,
     AppointmentModule,
     ConversationalContextsModule,
+    ChatbotModule,
   ],
   controllers: [AppController],
   providers: [
