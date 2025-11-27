@@ -23,7 +23,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { RemindersModule } from './reminders/reminders.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { ConversationalContextsModule } from './conversational_contexts/conversational_contexts.module';
-import { ChatbotModule } from './chatbot/enhanced-chatbot.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [

@@ -6,8 +6,9 @@ import { BurnoutAssessment } from '../burnout-assesment/entities/burnout-assesme
 import { ChatbotConversation, ConversationType } from './entities/chatbot-conversation.entity';
 import { Reminder, TypeofReminder } from '../reminders/entities/reminder.entity';
 import { User } from '../users/entities/user.entity';
+import { ChatMessageDto, ConversationResponseDto, ReminderResponseDto } from './dto/chatbot-dto';
 
-interface ChatMessage {
+export interface ChatMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
@@ -36,7 +37,7 @@ export class ChatbotService {
   ) {}
 
   // === DAILY CHECKINS ===
-  async startDailyCheckin(userId: number, checkinType: CheckinType) {
+  async startDailyCheckin(userId: number, checkinType: CheckinType): Promise<ConversationResponseDto> {
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
     if (!user) {
       throw new Error('User not found');
@@ -52,7 +53,6 @@ export class ChatbotService {
         break;
       default:
         conversationType = ConversationType.MIDDAY_CHECKIN;
-        break;
     }
 
     const conversation = this.conversationRepo.create({
@@ -67,7 +67,7 @@ export class ChatbotService {
     const greeting = this.getCheckinGreeting(checkinType);
     const firstQuestion = "On a scale of 1-10, how would you rate your mood right now?";
 
-    const messages: ChatMessage[] = [
+    const messages: ChatMessageDto[] = [
       { role: 'assistant', content: greeting, timestamp: new Date() },
       { role: 'assistant', content: firstQuestion, timestamp: new Date() },
     ];
@@ -75,13 +75,15 @@ export class ChatbotService {
     conversation.messages = messages;
     await this.conversationRepo.save(conversation);
 
-    return { conversationId: conversation.id, messages };
+    return {
+      conversationId: conversation.id,
+      messages,
+      isCompleted: false
+    };
   }
 
-
-
   // === BURNOUT ASSESSMENT ===
-  async startBurnoutAssessment(userId: number) {
+  async startBurnoutAssessment(userId: number): Promise<ConversationResponseDto> {
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
     if (!user) {
       throw new Error('User not found');
@@ -98,8 +100,8 @@ export class ChatbotService {
 
     const greeting = "Let's do a quick burnout assessment. I'll ask you several questions to better understand how you've been feeling. Please answer honestly on a scale of 1-5 (1 = never, 5 = always).";
     const firstQuestion = "I feel emotionally drained from my work. (1-5)";
-    
-    const messages: ChatMessage[] = [
+
+    const messages: ChatMessageDto[] = [
       { role: 'assistant', content: greeting, timestamp: new Date() },
       { role: 'assistant', content: firstQuestion, timestamp: new Date() },
     ];
@@ -107,11 +109,15 @@ export class ChatbotService {
     conversation.messages = messages;
     await this.conversationRepo.save(conversation);
 
-    return { conversationId: conversation.id, messages };
+    return {
+      conversationId: conversation.id,
+      messages,
+      isCompleted: false
+    };
   }
 
   // === MESSAGE PROCESSING ===
-  async processChatbotMessage(conversationId: string, userId: number, message: string) {
+  async processChatbotMessage(conversationId: string, userId: number, message: string): Promise<ConversationResponseDto> {
     const conversation = await this.conversationRepo.findOne({
       where: { id: conversationId, user: { user_id: userId } },
       relations: ['user'],
@@ -121,99 +127,134 @@ export class ChatbotService {
       throw new Error('Conversation not found');
     }
 
-    // Add user message
-    const messages = conversation.messages as ChatMessage[];
-    messages.push({ role: 'user', content: message, timestamp: new Date() });
+    // Add user message to conversation
+    const userMessage: ChatMessageDto = {
+      role: 'user',
+      content: message,
+      timestamp: new Date(),
+    };
 
-    // Process based on conversation type and context
+    const messages = [...conversation.messages, userMessage];
+
+    // Generate AI response
     const response = await this.generateResponse(conversation, message);
-    messages.push({ role: 'assistant', content: response.message, timestamp: new Date() });
+    
+    const assistantMessage: ChatMessageDto = {
+      role: 'assistant',
+      content: response.message,
+      timestamp: new Date(),
+    };
 
+    messages.push(assistantMessage);
+
+    // Update conversation
     conversation.messages = messages;
     conversation.context = response.context;
     conversation.isCompleted = response.isCompleted;
 
     await this.conversationRepo.save(conversation);
 
-    // If completed, save the data
+    // Save data if conversation is completed
     if (response.isCompleted && response.data) {
       await this.saveCheckinData(userId, response.data, conversation.conversationType);
     }
 
-    return { messages, isCompleted: response.isCompleted };
+    return {
+      conversationId: conversation.id,
+      messages,
+      isCompleted: response.isCompleted
+    };
   }
 
   // === AUTOMATED REMINDERS ===
-  async createAutomatedReminder(userId: number, reminderType: TypeofReminder) {
+  async createAutomatedReminder(userId: number, reminderType: TypeofReminder): Promise<ReminderResponseDto> {
     const user = await this.userRepo.findOne({ where: { user_id: userId } });
     if (!user) {
       throw new Error('User not found');
     }
 
-    const message = this.getReminderMessage(reminderType);
-    
-    // Set reminder time to 1 hour from now (you can adjust this logic)
-    const remindAt = new Date();
-    remindAt.setHours(remindAt.getHours() + 1);
-    
+    // Create reminder in the existing reminder system
     const reminder = this.reminderRepo.create({
-      user,
-      title: this.getReminderTitle(reminderType),
+      user: user,
       type: reminderType,
-      content: message,
-      remind_at: remindAt,
+      title: this.getReminderTitle(reminderType),
+      content: this.getReminderMessage(reminderType),
+      is_completed: false,
+      created_at: new Date(),
     });
 
     await this.reminderRepo.save(reminder);
-    
-    // Create a conversation for this reminder
+
+    // Create conversation for this reminder
     const conversation = this.conversationRepo.create({
       user,
       conversationType: ConversationType.REMINDER_RESPONSE,
-      messages: [
-        { role: 'assistant', content: message, timestamp: new Date() }
-      ],
-      context: { reminderType, reminderId: reminder.reminder_id },
-      metadata: { reminderType },
+      messages: [{
+        role: 'assistant',
+        content: this.getReminderMessage(reminderType),
+        timestamp: new Date(),
+      }],
+      context: { reminderId: reminder.reminder_id, reminderType },
     });
 
     await this.conversationRepo.save(conversation);
 
-    return { reminderId: reminder.reminder_id, conversationId: conversation.id, message };
+    return {
+      reminderId: reminder.reminder_id,
+      conversationId: conversation.id,
+      message: this.getReminderMessage(reminderType)
+    };
   }
 
-  async respondToReminder(conversationId: string, userId: number, response: string) {
+  async respondToReminder(conversationId: string, userId: number, response: string): Promise<ConversationResponseDto> {
     const conversation = await this.conversationRepo.findOne({
       where: { id: conversationId, user: { user_id: userId } },
       relations: ['user'],
     });
 
-    if (!conversation || conversation.conversationType !== ConversationType.REMINDER_RESPONSE) {
-      throw new Error('Invalid reminder conversation');
+    if (!conversation) {
+      throw new Error('Conversation not found');
     }
 
-    const reminderId = conversation.context.reminderId;
-    const reminder = await this.reminderRepo.findOne({ where: { reminder_id: reminderId } });
-    
-    if (reminder) {
-      // Update reminder with user interaction (you can extend Reminder entity to track this)
-      reminder.content = `${reminder.content}\n\nUser Response: ${response}`;
-      await this.reminderRepo.save(reminder);
-    }
+    const userMessage: ChatMessageDto = {
+      role: 'user',
+      content: response,
+      timestamp: new Date(),
+    };
 
-    // Add user response to conversation
-    const messages = conversation.messages as ChatMessage[];
-    messages.push({ role: 'user', content: response, timestamp: new Date() });
+    const messages = [...conversation.messages, userMessage];
 
-    // Generate encouraging response
-    const encouragement = this.getEncouragementMessage(conversation.context.reminderType, response);
-    messages.push({ role: 'assistant', content: encouragement, timestamp: new Date() });
+    // Generate encouragement message
+    const reminderType = conversation.context.reminderType;
+    const encouragement = this.getEncouragementMessage(reminderType, response);
 
+    const assistantMessage: ChatMessageDto = {
+      role: 'assistant',
+      content: encouragement,
+      timestamp: new Date(),
+    };
+
+    messages.push(assistantMessage);
+
+    // Update conversation
     conversation.messages = messages;
     conversation.isCompleted = true;
+
     await this.conversationRepo.save(conversation);
 
-    return { messages, isCompleted: true };
+    // Mark reminder as completed
+    if (conversation.context.reminderId) {
+      await this.reminderRepo.update(
+        { reminder_id: conversation.context.reminderId },
+        { is_completed: true, completed_at: new Date() }
+      );
+    }
+
+    return {
+      conversationId: conversation.id,
+      messages,
+      isCompleted: true
+    };
   }
 
   // === HELPER METHODS ===

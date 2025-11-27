@@ -29,6 +29,12 @@ export class Reminder {
   @Column({ type: 'datetime2' })
   remind_at: Date;
 
+  @Column({ type: 'bit', default: false })
+  is_completed: boolean;
+
+  @Column({ type: 'datetime2', nullable: true })
+  completed_at?: Date;
+
   @CreateDateColumn({ type: 'datetime2' })
   created_at: Date;
 

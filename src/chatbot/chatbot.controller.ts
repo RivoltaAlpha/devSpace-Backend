@@ -1,38 +1,30 @@
 import { Controller, Post, Get, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { ChatbotService } from './chatbot-enhanced.service';
+import { ChatbotService } from './chatbot.service';
 import { ChatbotEmitterService } from './chatbot-emitter.service';
 import { ChatbotSchedulerService } from './chatbot-scheduler.service';
 import { CheckinType } from '../daily-checkins/entities/daily-checkin.entity';
 import { TypeofReminder } from '../reminders/entities/reminder.entity';
-// import { AtGuard } from '../auth/guards/at.guard'; // Uncomment when auth is set up
+import { AtGuard } from 'src/auth/guards/access-token.guard';
+import {
+  StartCheckinDto,
+  ProcessMessageDto,
+  CreateReminderDto,
+  RespondReminderDto,
+  StartBurnoutAssessmentDto,
+  ConversationResponseDto,
+  ReminderResponseDto,
+  BulkOperationResponseDto,
+  SystemStatusDto,
+  ReminderTypesResponseDto,
+  CheckinTypesResponseDto,
+  AnalyticsSummaryDto,
+} from './dto/chatbot-dto';
 
-// DTOs
-class StartCheckinDto {
-  userId: number;
-  checkinType: CheckinType;
-}
-
-class ProcessMessageDto {
-  conversationId: string;
-  userId: number;
-  message: string;
-}
-
-class CreateReminderDto {
-  userId: number;
-  reminderType: TypeofReminder;
-}
-
-class RespondReminderDto {
-  conversationId: string;
-  userId: number;
-  response: string;
-}
 
 @ApiTags('Chatbot')
 @Controller('chatbot')
-// @UseGuards(AtGuard) // Uncomment when auth is ready
+@UseGuards(AtGuard) 
 export class ChatbotController {
   constructor(
     private chatbotService: ChatbotService,
@@ -41,29 +33,25 @@ export class ChatbotController {
   ) {}
 
   // === DAILY CHECKINS ===
-
   @Post('checkin/start')
   @ApiOperation({ summary: 'Start a daily check-in session' })
-  @ApiResponse({ status: 201, description: 'Check-in session started successfully' })
-  async startCheckin(@Body() dto: StartCheckinDto) {
+  @ApiResponse({ status: 201, description: 'Check-in session started successfully', type: ConversationResponseDto })
+  async startCheckin(@Body() dto: StartCheckinDto): Promise<ConversationResponseDto> {
     return this.chatbotService.startDailyCheckin(dto.userId, dto.checkinType);
   }
 
-
-
   @Post('burnout-assessment/start')
   @ApiOperation({ summary: 'Start a burnout assessment session' })
-  @ApiResponse({ status: 201, description: 'Burnout assessment session started successfully' })
-  async startBurnoutAssessment(@Body('userId') userId: number) {
-    return this.chatbotService.startBurnoutAssessment(userId);
+  @ApiResponse({ status: 201, description: 'Burnout assessment session started successfully', type: ConversationResponseDto })
+  async startBurnoutAssessment(@Body() dto: StartBurnoutAssessmentDto): Promise<ConversationResponseDto> {
+    return this.chatbotService.startBurnoutAssessment(dto.userId);
   }
 
   // === MESSAGE PROCESSING ===
-
   @Post('message/process')
   @ApiOperation({ summary: 'Process a chatbot message' })
-  @ApiResponse({ status: 200, description: 'Message processed successfully' })
-  async processMessage(@Body() dto: ProcessMessageDto) {
+  @ApiResponse({ status: 200, description: 'Message processed successfully', type: ConversationResponseDto })
+  async processMessage(@Body() dto: ProcessMessageDto): Promise<ConversationResponseDto> {
     return this.chatbotService.processChatbotMessage(
       dto.conversationId,
       dto.userId,
@@ -82,8 +70,8 @@ export class ChatbotController {
 
   @Post('reminder/respond')
   @ApiOperation({ summary: 'Respond to a reminder' })
-  @ApiResponse({ status: 200, description: 'Reminder response recorded' })
-  async respondToReminder(@Body() dto: RespondReminderDto) {
+  @ApiResponse({ status: 200, description: 'Reminder response recorded', type: ConversationResponseDto })
+  async respondToReminder(@Body() dto: RespondReminderDto): Promise<ConversationResponseDto> {
     return this.chatbotService.respondToReminder(
       dto.conversationId,
       dto.userId,
@@ -123,7 +111,6 @@ export class ChatbotController {
   }
 
   // === BULK OPERATIONS (admin only) ===
-
   @Post('bulk/morning-checkins')
   @ApiOperation({ summary: 'Trigger morning check-ins for all users' })
   @ApiResponse({ status: 200, description: 'Morning check-ins triggered for all users' })
@@ -153,7 +140,6 @@ export class ChatbotController {
   }
 
   // === SCHEDULER CONTROLS ===
-
   @Post('scheduler/morning-routines')
   @ApiOperation({ summary: 'Manually trigger all morning routines' })
   @ApiResponse({ status: 200, description: 'Morning routines executed' })
@@ -176,11 +162,10 @@ export class ChatbotController {
   }
 
   // === STATUS AND MONITORING ===
-
   @Get('status')
   @ApiOperation({ summary: 'Get chatbot system status' })
   @ApiResponse({ status: 200, description: 'System status retrieved' })
-  async getSystemStatus() {
+  async getSystemStatus(): Promise<SystemStatusDto> {
     const emitterStats = await this.emitterService.getEmitterStats();
     const schedulerStatus = await this.schedulerService.getSchedulerStatus();
     
