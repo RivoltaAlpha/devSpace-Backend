@@ -13,7 +13,7 @@ import { MessageType } from './entities/message.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
   },
 })
@@ -21,7 +21,7 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
   @WebSocketServer()
   server: Server;
 
-  private connectedUsers = new Map<string, string>(); // userId -> socketId
+  private connectedUsers = new Map<number, string>(); // userId -> socketId
 
   constructor(private messagingService: MessagingService) {}
 
@@ -47,8 +47,9 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
   async handleSendMessage(
     @ConnectedSocket() client: Socket,
     @MessageBody() payload: {
-      conversationId: string;
-      senderId: string;
+      conversation_id: number;
+      sender_id: number;
+      receiver_id: number;
       content: string;
       messageType?: MessageType;
       mediaUrl?: string;
@@ -56,8 +57,9 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
   ) {
     try {
       const message = await this.messagingService.sendMessage(
-        payload.conversationId,
-        payload.senderId,
+        payload.conversation_id,
+        payload.sender_id,
+        payload.receiver_id,
         payload.content,
         payload.messageType,
         payload.mediaUrl,
@@ -65,12 +67,18 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
 
       // Emit to both participants
       const conversation = await this.messagingService.conversationRepo.findOne({
-        where: { id: payload.conversationId },
+        where: { conversation_id: payload.conversation_id },
+        relations: ['dev', 'therapist'],
       });
 
-      const recipientId = conversation.devId === payload.senderId 
-        ? conversation.therapistId 
-        : conversation.devId;
+      if (!conversation) {
+        client.emit('message_error', { error: 'Conversation not found' });
+        return { success: false, error: 'Conversation not found' };
+      }
+
+      const recipientId = conversation.dev.dev_id === payload.sender_id 
+        ? conversation.therapist.therapist_id
+        : conversation.dev?.dev_id;
 
       const recipientSocketId = this.connectedUsers.get(recipientId);
       
@@ -94,20 +102,25 @@ export class MessagingGateway implements OnGatewayConnection, OnGatewayDisconnec
     @MessageBody() payload: { conversationId: string; userId: string },
   ) {
     await this.messagingService.markMessagesAsRead(
-      payload.conversationId,
-      payload.userId,
+      parseInt(payload.conversationId),
+      parseInt(payload.userId),
     );
 
     // Notify the other user that messages were read
     const conversation = await this.messagingService.conversationRepo.findOne({
-      where: { id: payload.conversationId },
+      where: { conversation_id: parseInt(payload.conversationId) },
+      relations: ['dev', 'therapist'],
     });
 
-    const otherUserId = conversation.devId === payload.userId 
-      ? conversation.therapistId 
-      : conversation.devId;
+    if (!conversation) {
+      return;
+    }
 
-    const otherUserSocketId = this.connectedUsers.get(otherUserId);
+    const otherUserId = conversation.dev?.dev_id === parseInt(payload.userId) 
+        ? conversation.therapist?.therapist_id 
+        : conversation.dev?.dev_id;
+
+    const otherUserSocketId: string | undefined = this.connectedUsers.get(otherUserId);
     
     if (otherUserSocketId) {
       this.server.to(otherUserSocketId).emit('messages_read', {

@@ -1,4 +1,5 @@
-import { User } from 'src/users/entities/user.entity';
+import { TherapistProfile } from 'src/therapist-profile/entities/therapist-profile.entity';
+import { DeveloperProfile } from 'src/developer-profile/entities/developer-profile.entity';
 import { Message } from 'src/messages/entities/message.entity';
 import {
   Entity,
@@ -38,13 +39,13 @@ export class Conversation {
   @UpdateDateColumn({ type: 'datetime2' })
   updated_at: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => DeveloperProfile)
   @JoinColumn({ name: 'dev_id' })
-  dev: User;
+  dev: DeveloperProfile;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => TherapistProfile)
   @JoinColumn({ name: 'therapist_id' })
-  therapist: User;
+  therapist: TherapistProfile;
 
   @OneToMany(() => Message, message => message.conversation)
   messages?: Message[];

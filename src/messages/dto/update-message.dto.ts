@@ -1,4 +1,11 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateMessageDto } from './create-message.dto';
+import { IsString, IsOptional } from 'class-validator';
 
-export class UpdateMessageDto extends PartialType(CreateMessageDto) {}
+export class UpdateMessageDto {
+  @IsString()
+  @IsOptional()
+  content?: string;
+
+  @IsString()
+  @IsOptional()
+  mediaUrl?: string;
+}
