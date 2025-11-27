@@ -26,8 +26,8 @@ export class BurnoutAssessment {
   overall_burnout_score?: number;
 
   @Column({
-    type: 'enum',
-    enum: RiskLevel,
+    type: 'nvarchar',
+    length: 255,
     name: 'risk_level',
     nullable: true,
   })

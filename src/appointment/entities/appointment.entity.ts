@@ -33,8 +33,8 @@ export class Appointment {
   appointment_id: string;
 
   @Column({
-    type: 'enum',
-    enum: AppointmentType,
+    type: 'nvarchar',
+    length: 255,
     name: 'appointment_type',
     default: AppointmentType.REGULAR_SESSION,
   })
@@ -47,8 +47,8 @@ export class Appointment {
   duration_minutes: number;
 
   @Column({
-    type: 'enum',
-    enum: AppointmentStatus,
+    type: 'nvarchar',
+    length: 255,
     default: AppointmentStatus.SCHEDULED,
   })
   status: AppointmentStatus;

@@ -25,8 +25,8 @@ export class TherapistProfile {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   session_rate?: number;
 
-  @Column({ type: 'jsonb', nullable: true })
-  availability_slots?: Record<string, any>;
+  @Column({ type: 'nvarchar', length: 'MAX', nullable: true })
+  availability_slots?: string;
 
   @Column({ type: 'bit', default: true })
   is_accepting_clients: boolean;

@@ -24,8 +24,8 @@ export class Conversation {
   conversation_id: number;
 
   @Column({
-    type: 'enum',
-    enum: ConversationStatus,
+    type: 'nvarchar',
+    length: 255,
     default: ConversationStatus.ACTIVE,
   })
   status: ConversationStatus;

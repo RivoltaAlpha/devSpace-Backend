@@ -34,16 +34,34 @@ export class ChatbotConversation {
   })
   conversationType: ConversationType;
 
-  @Column({ type: 'jsonb' })
+  @Column({   type: 'nvarchar', 
+  length: 'MAX', 
+  nullable: true,
+  transformer: {
+    to: (value: any) => value ? JSON.stringify(value) : null,
+    from: (value: string) => value ? JSON.parse(value) : null
+  } })
   messages: any[]; // Array of ChatMessage objects
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({   type: 'nvarchar', 
+  length: 'MAX', 
+  nullable: true,
+  transformer: {
+    to: (value: any) => value ? JSON.stringify(value) : null,
+    from: (value: string) => value ? JSON.parse(value) : null
+  } })
   context?: any; // Current conversation context/state
 
   @Column({ type: 'bit', default: false })
   isCompleted: boolean;
 
-  @Column({ type: 'jsonb', nullable: true })
+  @Column({  type: 'nvarchar', 
+  length: 'MAX', 
+  nullable: true,
+  transformer: {
+    to: (value: any) => value ? JSON.stringify(value) : null,
+    from: (value: string) => value ? JSON.parse(value) : null
+  } })
   metadata?: any; // Additional data like reminder type, etc.
 
   @CreateDateColumn({ type: 'datetime2' })
