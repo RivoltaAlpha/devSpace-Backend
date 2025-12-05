@@ -12,7 +12,14 @@ export class TherapistProfile {
   @Column({ type: 'nvarchar', nullable: false })
   license_number?: string;
 
-  @Column('text', { array: true, nullable: true })
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => value ? JSON.stringify(value) : null,
+      from: (value: string) => value ? JSON.parse(value) : null,
+    },
+  })
   specializations?: string[];
 
   @Column({ type: 'int', nullable: true })

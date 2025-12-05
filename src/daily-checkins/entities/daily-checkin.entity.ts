@@ -37,7 +37,14 @@ export class DailyCheckin {
   @Column('text', { nullable: true })
   note?: string;
 
-  @Column('text', { array: true, nullable: true })
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => value ? JSON.stringify(value) : null,
+      from: (value: string) => value ? JSON.parse(value) : null,
+    },
+  })
   tags?: string[];
 
     @CreateDateColumn({type: 'datetime2'})

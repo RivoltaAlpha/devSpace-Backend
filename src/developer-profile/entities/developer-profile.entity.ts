@@ -31,8 +31,12 @@ export class DeveloperProfile {
   @JoinColumn({ name: 'user_id' })
   user: number;
 
-  @Column({ array: true, type: 'nvarchar', nullable: true })
-  tech_stack?: string[];
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    length: 255,
+  })
+  tech_stack?: string;
 
   @Column({
     type: 'nvarchar',
@@ -53,12 +57,13 @@ export class DeveloperProfile {
   @Column({ type: 'nvarchar', length: 1000, nullable: true })
   bio?: string;
 
-  @Column('nvarchar', {
-    array: true,
+  @Column({
+    type: 'nvarchar',
     name: 'primary_stressors',
     nullable: true,
+    length: 1000,
   })
-  primary_stressors?: string[];
+  primary_stressors?: string;
 
   @CreateDateColumn({ type: 'datetime2' })
   created_at: Date;

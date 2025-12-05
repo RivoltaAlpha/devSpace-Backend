@@ -48,10 +48,24 @@ export class Resource {
   @Column({ type: 'int', nullable: true })
   duration_minutes?: number;
 
-  @Column('text', { array: true, nullable: true })
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => value ? JSON.stringify(value) : null,
+      from: (value: string) => value ? JSON.parse(value) : null,
+    },
+  })
   tags?: string[]; // ['stress', 'burnout', 'imposter-syndrome']
 
-  @Column('text', { array: true, nullable: true })
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => value ? JSON.stringify(value) : null,
+      from: (value: string) => value ? JSON.parse(value) : null,
+    },
+  })
   categories?: string[]; // ['mental-health', 'work-life-balance']
 
   @Column({ type: 'nvarchar', length: 255, name: 'target_audience', nullable: true })

@@ -33,7 +33,14 @@ export class BurnoutAssessment {
   })
   risk_level?: RiskLevel;
 
-  @Column('text', { array: true, nullable: true })
+  @Column({
+    type: 'nvarchar',
+    nullable: true,
+    transformer: {
+      to: (value: string[]) => value ? JSON.stringify(value) : null,
+      from: (value: string) => value ? JSON.parse(value) : null,
+    },
+  })
   recommendations?: string[];
 
   @CreateDateColumn({ type: 'datetime2'})
