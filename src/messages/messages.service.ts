@@ -59,9 +59,9 @@ export class MessagingService {
     }
 
     const message = this.messageRepo.create({
-      conversation: { conversation_id: conversation_id } as any,
-      sender: { id: sender_id } as any,
-      receiver: { id: conversation.dev.dev_id === sender_id ? conversation.therapist.therapist_id : conversation.dev.dev_id } as any,
+      conversation_id: conversation_id,
+      sender_id: sender_id,
+      receiver_id: conversation.dev.dev_id === sender_id ? conversation.therapist.therapist_id : conversation.dev.dev_id,
       content,
       message_type: messageType,
       media_url: mediaUrl,
@@ -98,9 +98,8 @@ export class MessagingService {
 
     const [messages, total] = await this.messageRepo.findAndCount({
       where: { 
-        conversation: { conversation_id: conversationId }
+        conversation_id: conversationId
       },
-      relations: ['sender', 'receiver'],
       order: { created_at: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
@@ -151,7 +150,6 @@ export class MessagingService {
 
   async findAll() {
     return this.messageRepo.find({
-      relations: ['sender', 'receiver', 'conversation'],
       order: { created_at: 'DESC' },
     });
   }
@@ -159,7 +157,6 @@ export class MessagingService {
   async findOne(id: number) {
     const message = await this.messageRepo.findOne({
       where: { message_id: id },
-      relations: ['sender', 'receiver', 'conversation'],
     });
     
     if (!message) {

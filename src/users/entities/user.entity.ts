@@ -1,14 +1,14 @@
 
-import { DeveloperProfile } from "src/developer-profile/entities/developer-profile.entity";
-import { TherapistProfile } from "src/therapist-profile/entities/therapist-profile.entity";
-import { Appointment } from "src/appointment/entities/appointment.entity";
-import { Conversation } from "src/conversations/entities/conversation.entity";
-import { Message } from "src/messages/entities/message.entity";
-import { DailyCheckin } from "src/daily-checkins/entities/daily-checkin.entity";
-import { BurnoutAssessment } from "src/burnout-assesment/entities/burnout-assesment.entity";
-import { Reminder } from "src/reminders/entities/reminder.entity";
-import { ConversationalContext } from "src/conversational_contexts/entities/conversational_context.entity";
-import { ChatbotConversation } from "src/chatbot/entities/chatbot-conversation.entity";
+import { DeveloperProfile } from "../../developer-profile/entities/developer-profile.entity";
+import { TherapistProfile } from "../../therapist-profile/entities/therapist-profile.entity";
+import { Appointment } from "../../appointment/entities/appointment.entity";
+import { Conversation } from "../../conversations/entities/conversation.entity";
+import { Message } from "../../messages/entities/message.entity";
+import { DailyCheckin } from "../../daily-checkins/entities/daily-checkin.entity";
+import { BurnoutAssessment } from "../../burnout-assesment/entities/burnout-assesment.entity";
+import { Reminder } from "../../reminders/entities/reminder.entity";
+import { ConversationalContext } from "../../conversational_contexts/entities/conversational_context.entity";
+import { ChatbotConversation } from "../../chatbot/entities/chatbot-conversation.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, OneToOne } from "typeorm";
 
 export enum UserRole{

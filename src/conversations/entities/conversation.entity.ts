@@ -1,5 +1,5 @@
-import { TherapistProfile } from 'src/therapist-profile/entities/therapist-profile.entity';
-import { DeveloperProfile } from 'src/developer-profile/entities/developer-profile.entity';
+import { TherapistProfile } from '../../therapist-profile/entities/therapist-profile.entity';
+import { DeveloperProfile } from '../../developer-profile/entities/developer-profile.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
