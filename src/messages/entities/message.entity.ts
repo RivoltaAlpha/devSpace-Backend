@@ -1,4 +1,3 @@
-import { Conversation } from 'src/conversations/entities/conversation.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 
@@ -14,18 +13,18 @@ export class Message {
   @PrimaryGeneratedColumn()
   message_id: number;
 
-  @ManyToOne(() => Conversation)
+  @ManyToOne('Conversation')
   @JoinColumn({ name: 'conversation_id' })
-  conversation: Conversation;
+  conversation_id: number;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'sender_id' })
-  sender: User;
+  sender_id: number;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'receiver_id' })
-  receiver: User;
-
+  receiver_id: number;
+  
   @Column({
     type: 'nvarchar',
     enum: MessageType,

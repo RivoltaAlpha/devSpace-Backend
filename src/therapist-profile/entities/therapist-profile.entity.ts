@@ -1,4 +1,3 @@
-import { User } from 'src/users/entities/user.entity';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
 
 @Entity('therapist_profiles')
@@ -6,9 +5,9 @@ export class TherapistProfile {
   @PrimaryGeneratedColumn()
   therapist_id: number;
 
-  @OneToOne(() => User)
+  @OneToOne('User')
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: number;
 
   @Column({ type: 'nvarchar', nullable: false })
   license_number?: string;

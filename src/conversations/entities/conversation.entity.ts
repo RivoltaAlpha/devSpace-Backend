@@ -1,6 +1,5 @@
 import { TherapistProfile } from 'src/therapist-profile/entities/therapist-profile.entity';
 import { DeveloperProfile } from 'src/developer-profile/entities/developer-profile.entity';
-import { Message } from 'src/messages/entities/message.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -47,6 +46,6 @@ export class Conversation {
   @JoinColumn({ name: 'therapist_id' })
   therapist: TherapistProfile;
 
-  @OneToMany(() => Message, message => message.conversation)
-  messages?: Message[];
+  @OneToMany('Message', 'conversation')
+  messages?: any[];
 }

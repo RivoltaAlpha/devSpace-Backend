@@ -1,4 +1,3 @@
-import { User } from 'src/users/entities/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -28,9 +27,9 @@ export class DeveloperProfile {
   @PrimaryGeneratedColumn()
   dev_id: number;
 
-  @OneToOne(() => User)
+  @OneToOne('User')
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: number;
 
   @Column({ array: true, type: 'nvarchar', nullable: true })
   tech_stack?: string[];

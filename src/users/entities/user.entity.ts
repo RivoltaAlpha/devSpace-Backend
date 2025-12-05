@@ -60,43 +60,43 @@ export class User {
   last_active_at?: Date;
 
   // One-to-One relationships
-  @OneToOne(() => DeveloperProfile, profile => profile.user)
+  @OneToOne('DeveloperProfile', (profile: DeveloperProfile) => profile.user)
   developerProfile?: DeveloperProfile;
 
-  @OneToOne(() => TherapistProfile, profile => profile.user)
+  @OneToOne('TherapistProfile', (profile: TherapistProfile) => profile.user)
   therapistProfile?: TherapistProfile;
 
   // One-to-Many relationships
-  @OneToMany(() => Appointment, appointment => appointment.dev)
+  @OneToMany('Appointment', (appointment: Appointment) => appointment.dev)
   devAppointments?: Appointment[];
 
-  @OneToMany(() => Appointment, appointment => appointment.therapist)
+  @OneToMany('Appointment', (appointment: Appointment) => appointment.therapist)
   therapistAppointments?: Appointment[];
 
-  @OneToMany(() => Conversation, conversation => conversation.dev)
+  @OneToMany('Conversation', (conversation: Conversation) => conversation.dev)
   devConversations?: Conversation[];
 
-  @OneToMany(() => Conversation, conversation => conversation.therapist)
+  @OneToMany('Conversation', (conversation: Conversation) => conversation.therapist)
   therapistConversations?: Conversation[];
 
-  @OneToMany(() => Message, message => message.sender)
+  @OneToMany('Message', (message: Message) => message.sender_id)
   sentMessages?: Message[];
 
-  @OneToMany(() => Message, message => message.receiver)
+  @OneToMany('Message', (message: Message) => message.receiver_id)
   receivedMessages?: Message[];
 
-  @OneToMany(() => DailyCheckin, checkin => checkin.user)
+  @OneToMany('DailyCheckin', (checkin: DailyCheckin) => checkin.user)
   dailyCheckins?: DailyCheckin[];
 
-  @OneToMany(() => BurnoutAssessment, assessment => assessment.user)
+  @OneToMany('BurnoutAssessment', (assessment: BurnoutAssessment) => assessment.user)
   burnoutAssessments?: BurnoutAssessment[];
 
-  @OneToMany(() => Reminder, reminder => reminder.user)
+  @OneToMany('Reminder', (reminder: Reminder) => reminder.user)
   reminders?: Reminder[];
 
-  @OneToMany(() => ConversationalContext, context => context.dev)
+  @OneToMany('ConversationalContext', (context: ConversationalContext) => context.dev)
   conversationalContexts?: ConversationalContext[];
 
-  @OneToMany(() => ChatbotConversation, conversation => conversation.user)
+  @OneToMany('ChatbotConversation', (conversation: ChatbotConversation) => conversation.user)
   chatbotConversations?: ChatbotConversation[];
 }

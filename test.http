@@ -77,3 +77,12 @@ Content-Type: application/json
   "phone": "+1234567890",
   "role": "user"
 }
+
+### Run Migrations
+POST {{baseUrl}}/migrate
+
+### Check Migration Status
+GET {{baseUrl}}/migration-status
+
+### Run Database Seed (after migrations)
+GET {{baseUrl}}/seed/all
