@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8000
 @contentType = Content-Type: application/json
-@adminToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjQ5LCJlbWFpbCI6InRlc3RhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3NjIxNjQ1NjUsImV4cCI6MTc2MjE3MTc2NX0.bZzr_yntlx9uqc7miod7a5AFawgkAY4ihprT75Ub0Kc
+@adminToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjIzLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc2NDkzMjEzOCwiZXhwIjoxNzY0OTM5MzM4fQ.ZuAGOqJJHa9wCTWnsTzHj-TGBw02AwcmPQhL20bPaOc
 @userToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjI4LCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzYxNzI3MDk1LCJleHAiOjE3NjE3MzQyOTV9.EhHX_3DQ4_L9e-gCX3DzVrSK2ytmbc8bXEXPO2D5mAc
 
 ### Create User 
@@ -9,10 +9,10 @@ POST {{baseUrl}}/auth/signup
 
 {
   "name": "JJ Jakes",
-  "email": "test24@gmail.com",
+  "email": "admin@gmail.com",
   "password": "password123",
   "phone": "+1234567890",
-  "role": "user"
+  "role": "Admin"
 }
 
 ###
@@ -20,13 +20,13 @@ POST {{baseUrl}}/auth/signin
 {{contentType}}
 
 {
-  "email": "tyla@gmail.com",
+  "email": "admin@gmail.com",
   "password": "password123"
 }
 
 ###
 GET {{baseUrl}}/users/get-all
-Authorization: Bearer {{userToken}}
+Authorization: Bearer {{adminToken}}
 
 ###
 POST {{baseUrl}}/auth/signup
@@ -41,42 +41,16 @@ POST {{baseUrl}}/auth/signup
 }
 
 ###
-POST {{baseUrl}}/auth/signin
-{{contentType}}
-
-{
-  "email": "testadmin@gmail.com",
-  "password": "password123"
-}
-
-###
 GET {{baseUrl}}/users/get-all
 Authorization: Bearer {{adminToken}}
 
 ###
-GET {{baseUrl}}/users/get-user/24
+GET {{baseUrl}}/users/get-user/3
 Authorization: Bearer {{adminToken}}
 
 
 ###
 GET {{baseUrl}}/seed/all
-
-###
-POST {{baseUrl}}/seed/clear
-
-
-### Create User 
-POST {{baseUrl}}/users/create-user
-Authorization: Bearer {{adminToken}}
-Content-Type: application/json
-
-{
-  "name": "JJ Jakes",
-  "email": "test24@gmail.com",
-  "password": "password123",
-  "phone": "+1234567890",
-  "role": "user"
-}
 
 ### Run Migrations
 POST {{baseUrl}}/migrate

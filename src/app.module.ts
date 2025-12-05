@@ -24,6 +24,7 @@ import { RemindersModule } from './reminders/reminders.module';
 import { AppointmentModule } from './appointment/appointment.module';
 import { ConversationalContextsModule } from './conversational_contexts/conversational_contexts.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     AppointmentModule,
     ConversationalContextsModule,
     ChatbotModule,
+    SeedModule,
   ],
   controllers: [AppController],
   providers: [

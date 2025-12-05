@@ -37,7 +37,7 @@ export class UsersService {
         password: createUserDto.password,
         phone: createUserDto.phone,
         role: createUserDto.role,
-        hashedRefreshedToken: ""
+        hashedRefreshedToken: "ooooo"
       });
 
      const savedUser: any = await this.userRepository.save(user);

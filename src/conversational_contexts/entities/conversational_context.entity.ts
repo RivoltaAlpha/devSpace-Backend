@@ -6,10 +6,10 @@ export class ConversationalContext {
     @PrimaryGeneratedColumn()
     context_id: number;
 
-    @Column({ type: 'nvarchar' })
+    @Column({ type: 'nvarchar', length: 'MAX' })
     context_data: string;
 
-    @Column({ type: 'nvarchar' })
+    @Column({ type: 'nvarchar', length: 255 })
     session_type: string;
 
     @CreateDateColumn({ type: 'datetime2' })
